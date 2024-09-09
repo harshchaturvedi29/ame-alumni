@@ -26,13 +26,22 @@ const userSchema = new mongoose.Schema({
   },
   department: {
     type: String,
-    enum: ['mechanical'],
+    enum: ['mechanical', 'cse', 'electrical'],  //ask if other dept alumnis can also login
     default: 'mechanical'
   },
   batch: {
     type: Number,
     required: true,
     trim: true,
+
+  },
+
+  registrationNumber: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true,
+    maxLength: 10,
 
   },
   profilePicture: {
@@ -53,6 +62,8 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
+
+//hashing password before saving to database
 userSchema.pre('save', async function(next) {
   const user = this;
   if (user.isModified('password')) {
@@ -61,6 +72,5 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
-const User = mongoose.model('User', userSchema);
+export const User = (mongoose.models.users) || mongoose.model('User', userSchema);
 
-module.exports = User;
